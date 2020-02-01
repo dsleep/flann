@@ -146,8 +146,17 @@ if (BUILD_CUDA_LIB)
     endif(CUDA_FOUND)
 endif(BUILD_CUDA_LIB)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LZ4 REQUIRED liblz4)
+
+#SR - DS find LZ4
+if(CMAKE_C_COMPILER_ID MATCHES "MSVC" OR CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+	find_package(LZ4 REQUIRED)	
+	include_directories(${LZ4_INCLUDE_DIR})
+	set(LZ4_LIBRARIES "${LZ4_LIBRARY}/lz4.lib")	
+	set(FLANN_LIB_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
+else()
+	find_package(PkgConfig REQUIRED)
+	pkg_check_modules(LZ4 REQUIRED liblz4)
+endif()
 
 #set the C/C++ include path to the "include" directory
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/src/cpp)
